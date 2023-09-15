@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./img/eos.png">
+    <title>Transfer Tracker</title>
+
+    
+    <script src='eosjs/eosjs-api.js'></script>
+    <script src='eosjs/eosjs-jsonrpc.js'></script>
+    <script src='eosjs/eosjs-jssig.js'></script>
+    <script src='eosjs/buffer.js'></script>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js" integrity="sha512-UnrKxsCMN9hFk7M56t4I4ckB4N/2HHi0w/7+B/1JsXIX3DmyBcsGpT3/BsuZMZf+6mAr0vP81syWtfynHJ69JA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  
+
+      <link href="./css/fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/fontawesome.css" rel="stylesheet">
+      <link href="./css/fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/brands.css" rel="stylesheet">
+      <link href="./css/fontawesome-free-6.2.1-web/fontawesome-free-6.2.1-web/css/solid.css" rel="stylesheet">
+      <link rel="stylesheet" href="./css/main.css">
+      <script>
+        $(document).ready(function() {
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+      </script>
+
+
+</head>
+
+<body>
+
+  <nav >
+    <input type="checkbox" id="check" class="checkbtn">
+    <label for="check" class="checkbtn">
+      <i class="fas fa-bars"></i>
+    </label>
+    <label class="logo">HuFi Transfer Tracker Dapp</label>
+     
+    <div class="p">Select an Exchange:
+      <select class="form-select" id="select" style="text-align: center;" onchange="mySelect()">
+        <option value="all">ALL</option>
+          <option value="eosupbitsusr">Eosupbitsusr</option>
+          <option value="binancecleos">Binancecleos</option>
+          <option value="swap.defi">Swap.defi</option>
+          <option value="newdexpublic">Newdexpublic</option>
+          <option value="bithumbrecv1">Bithumbrecv1</option>
+          <option value="bitfinexdep1">Bitfinexdep1</option>
+          <option value="mxcexdeposit">Mxcexdeposit</option>
+           <option value="huobideposit">Huobideposit</option>
+           <option value="kunaexchange">Kunaexchange</option>
+           <option value="gateiowallet">Gateiowallet</option>
+           <option value="krakenkraken">Kraken</option>
+           <option value="bullishfunds">Bullishfunds</option>
+           <option value="coinbasebase">Coinbasebase</option>
+           <option value="kucoindoteos">Kucoindoteos</option>
+      </select>
+  
+      <div class="sideStat"  style="text-align: center;">
+        <div style="padding: 15px; display: flex; justify-content: center;"><img  class="eosImg" src="./img/eos logo.png"></div>
+        <div style="padding: 15px; display: flex; justify-content: center;"> <img  class="mltImg" src="./img/mlt logo.jpg"></div>
+       <div class="accDetails">
+         Account balance: ~
+       
+     </div>
+     </div>
+    </div>
+ 
+</nav>
+
+<div class="popup">
+  <div class="close-btn">&times;</div>
+  <div class="form">
+   <h2>Log in</h2>
+   <div class="form-element">
+     <label for="name">Account Name:</label>
+     <input type="text" id="name" placeholder="from account"  />
+   </div>
+
+   <div class="form-element">
+     <label for="key">Private Key:</label>
+     <input  type="password" id="key" placeholder="Enter Key"  />
+   </div>
+
+   <div class="form-element keyLogin">
+    <button id="keyLogIn">Log In</button>
+   </div>
+
+   <div class="form-element" style="text-align: center;">
+     <button id="wallet">Wallet</button>
+     <div id="login2" style="text-align: center; color: green; width: 100%;"></div>
+    </div>
+  </div>
+</div>
+
+<div class = "overlay"></div>
+<div class = "overlay2">
+  <div class = "notice"> <img src="img/spinner.gif" alt=""> </div>
+</div>
+
+
+
+  <div class="container-xl">
+    <div class="table-responsive">
+      <div class="table-wrapper">
+        <div class="table-title" style="background:white;">
+          <div class="row">
+            <div class="col-sm-5">
+              <h2 style="color:black;">Account Details</h2>
+            </div>
+            <div class="col-sm-7">
+             <!-- <a href="#" class="btn btn-secondary"> 
+                <i class="material-icons">lock_outline</i>
+                <span>Log Out</span>
+              </a>-->
+              <a href="#" id="login" class="btn btn-secondary" data-toggle="modal">
+                <i class="material-icons">lock_open</i>
+                <span>Log In</span>
+              </a>
+             
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-5 ">
+            <p id="logInStatus" style="margin-bottom: 0.3em; margin-left: 1.0em;">User: ~</p>
+            <p class="accDetails" style="margin-bottom: 0.3em; margin-left: 1.0em;">Account Balance: ~</p>
+            
+          </div>
+          <div class="col-sm-7">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container-xl">
+    <div class="table-responsive">
+      <div class="table-wrapper">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-sm-5">
+              <h2>Hu-Fi <b>Transfer Tracker</b>
+              </h2>
+            </div>
+            <div class="col-sm-7">
+             <!-- <a class="btn btn-primary" >
+              <input type="checkbox" id="sorted" style="cursor:pointer" onclick="boxChecked()">Sort</input>
+              </a>-->
+              <a href="#" id="addRow" class="btn btn-secondary" data-toggle="modal">
+                <i class="material-icons"></i>
+                <span>Export to Excel</span>
+              </a>
+              <a href="#" id="clear" class="btn btn-secondary" data-toggle="modal">
+                <i class="material-icons">&#xE15C;</i>
+                <span>Clear Data</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+
+       
+
+        <form>
+
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              
+              <th>Account</th>
+              <th>Exchange</th>
+              <th>Date</th>
+              <th>Transaction ID</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            
+
+
+           
+
+          </tbody>
+       
+        </table> 
+      </form>
+
+
+        <div class="clearfix">
+          <button type="button" id="submit" class="btn btn-primary btn-sm submitData" style="display: none;"><i class="bi-save2"></i> Get Transfers</button>
+          <button type="button" id="submit2" class="btn btn-primary btn-sm submitData" ><i class="bi-save2"></i> Get Transfers</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>Developed By Bukusoft Technologies</footer>
+   
+
+  <script src="login.js"></script>
+
+  <script src="bundle.js"></script>
+</body>
+
+</html> 
+
+
+
+
+
+
+
+
+
+
+
+
+
